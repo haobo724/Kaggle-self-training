@@ -107,7 +107,6 @@ def preprocess_dataframe(dataFrame:pd.DataFrame,test_set = False):
     num_cols = ['ShoppingMall','FoodCourt','RoomService','Spa','VRDeck','MoneySpent']
     cat_cols = ['CryoSleep','Deck','Side','HomePlanet','Destination']
     #notvg = ['HomePlanet','VIP','ShoppingMall','FoodCourt','Age','Cabin_2','Destination']
-    # dataFrame = dataFrame[num_cols+cat_cols].copy()
     num_imp = SimpleImputer(strategy='mean')
     cat_imp = SimpleImputer(strategy='most_frequent')
     ohe = OneHotEncoder(handle_unknown='ignore')
@@ -116,9 +115,9 @@ def preprocess_dataframe(dataFrame:pd.DataFrame,test_set = False):
     dataFrame[num_cols] = pd.DataFrame(num_imp.fit_transform(dataFrame[num_cols]),columns=num_cols)
     dataFrame[cat_cols] = pd.DataFrame(cat_imp.fit_transform(dataFrame[cat_cols]),columns=cat_cols)
     
-    temp_train = pd.DataFrame(ohe.fit_transform(dataFrame[cat_cols]).toarray(), columns= ohe.get_feature_names_out())
-    dataFrame = dataFrame.drop(cat_cols,axis=1)
-    dataFrame = pd.concat([dataFrame,temp_train],axis=1)
+    # temp_train = pd.DataFrame(ohe.fit_transform(dataFrame[cat_cols]).toarray(), columns= ohe.get_feature_names_out())
+    # dataFrame = dataFrame.drop(cat_cols,axis=1)
+    # dataFrame = pd.concat([dataFrame,temp_train],axis=1)
     
     
     
@@ -126,7 +125,7 @@ def preprocess_dataframe(dataFrame:pd.DataFrame,test_set = False):
     dataFrame[columns_mean_fill] = dataFrame[columns_mean_fill].fillna(dataFrame[columns_mean_fill].mean())
     dataFrame['Cabin_num'] = dataFrame['Cabin_num'].fillna(0)
     #convert str to int
-    # dataFrame = fill_noneInt_data(dataFrame,cat_cols)
+    dataFrame = fill_noneInt_data(dataFrame,cat_cols)
     print(dataFrame.head(15))
     
     if not test_set:
@@ -228,7 +227,7 @@ if __name__ == "__main__":
     weight = [0.6, 0.1, 0.3]
     prd_list = [pred_rf, pred_sciNN, pred_torchNN]
     pred =weight[0]*prd_list[0] + weight[1]*prd_list[1] + weight[2]*prd_list[2]
-    pred = (pred > 0.35).astype(bool)
+    pred = (pred > 0.5).astype(bool)
 
     output = pd.DataFrame({'PassengerId':PassengerId,
                     'Transported': pred.squeeze()})

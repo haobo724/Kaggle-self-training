@@ -20,6 +20,7 @@ class NeuralNetwork(torch.nn.Module):
             torch.nn.Linear(input_size, input_size*4),
             torch.nn.BatchNorm1d(input_size*4),
             torch.nn.LeakyReLU(),
+            torch.nn.Dropout(0.3),
             torch.nn.Linear(input_size*4, input_size*4),
             torch.nn.BatchNorm1d(input_size*4),
             torch.nn.LeakyReLU(),
